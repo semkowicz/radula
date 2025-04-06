@@ -1,0 +1,8 @@
+[package]
+name = "radula"
+version = "0.1.0"
+edition = "2024"
+authors = ["Daniel Semkowicz <daniel@semkowicz.pl>"]
+license = "MIT"
+
+[dependencies]
