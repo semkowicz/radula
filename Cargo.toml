@@ -6,3 +6,5 @@ authors = ["Daniel Semkowicz <daniel@semkowicz.pl>"]
 license = "MIT"
 
 [dependencies]
+anyhow = "1.0.97"
+time = { version = "0.3.41", features = ["formatting"] }
