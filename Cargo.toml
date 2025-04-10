@@ -7,4 +7,5 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.97"
+scraper = "0.23.1"
 time = { version = "0.3.41", features = ["formatting"] }
