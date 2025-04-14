@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use radula::request::{RequestParameters, vesperae};
+use radula::style_parser::{MainTable, TableCell};
 use reqwest::Url;
 use reqwest::blocking::Request;
 use time::{Date, format_description};
@@ -39,6 +40,33 @@ fn construct_request(params: RequestParameters) -> Result<Request> {
         .context("Failed to build request")
 }
 
+fn format_section_text(styled_section: &TableCell) -> String {
+    let mut section_text = String::new();
+    
+    for styled_line in styled_section {
+        let mut text_line = String::new();
+
+        for fragment in styled_line {
+            text_line += fragment.text();
+        }
+        
+        section_text.push_str(text_line.trim());
+        section_text.push('\n');
+    }
+
+    section_text
+}
+
+fn print_table(table: &MainTable) {
+    for row in table {
+        println!("========================================");
+        print!("{}", format_section_text(&row.latin));
+        println!("----------------------------------------");
+        print!("{}", format_section_text(&row.translation));
+    }
+    println!("========================================");
+}
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -55,6 +83,7 @@ fn main() -> Result<()> {
 
     println!("{}", officium.day_name);
     println!("{}", officium.part_name);
+    print_table(&officium.content);
 
     Ok(())
 }
