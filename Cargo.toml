@@ -12,4 +12,5 @@ time = { version = "0.3.41", features = ["formatting", "parsing"] }
 
 [dev-dependencies]
 clap = { version = "4.5.35", features = ["derive"] }
+comfy-table = "7.1.4"
 reqwest = { version = "0.12.15", features = ["blocking"] }

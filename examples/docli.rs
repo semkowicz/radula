@@ -42,29 +42,37 @@ fn construct_request(params: RequestParameters) -> Result<Request> {
 
 fn format_section_text(styled_section: &TableCell) -> String {
     let mut section_text = String::new();
-    
+
     for styled_line in styled_section {
         let mut text_line = String::new();
 
         for fragment in styled_line {
             text_line += fragment.text();
         }
-        
+
         section_text.push_str(text_line.trim());
         section_text.push('\n');
     }
 
-    section_text
+    section_text.trim_end().to_string()
 }
 
-fn print_table(table: &MainTable) {
-    for row in table {
-        println!("========================================");
-        print!("{}", format_section_text(&row.latin));
-        println!("----------------------------------------");
-        print!("{}", format_section_text(&row.translation));
+fn format_printable_table(table_text: &MainTable) -> comfy_table::Table {
+    let mut table = comfy_table::Table::new();
+    table
+        .load_preset(comfy_table::presets::UTF8_FULL)
+        .set_content_arrangement(comfy_table::ContentArrangement::Dynamic)
+        .set_header(vec!["Latin", "Translation"]);
+
+    for row_text in table_text {
+        let row_tuple = vec![
+            format_section_text(&row_text.latin),
+            format_section_text(&row_text.translation),
+        ];
+        table.add_row(row_tuple);
     }
-    println!("========================================");
+
+    table
 }
 
 fn main() -> Result<()> {
@@ -83,7 +91,7 @@ fn main() -> Result<()> {
 
     println!("{}", officium.day_name);
     println!("{}", officium.part_name);
-    print_table(&officium.content);
+    println!("{}", format_printable_table(&officium.content));
 
     Ok(())
 }
