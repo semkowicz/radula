@@ -27,13 +27,15 @@ pub(crate) fn parse_cell(cell: ElementRef) -> Result<Vec<TextLine>> {
                         }
                     }
                     "font" => {
-                        let text_fragment = process_font_element(element)
-                            .context("Failed to process font element")?;
+                        let text_fragment = process_font_element(element).with_context(|| {
+                            format!("Failed to process font element: {value:?}")
+                        })?;
                         current_line.push(text_fragment);
                     }
                     "span" => {
-                        let text_fragment = process_span_element(element)
-                            .context("Failed to process span element")?;
+                        let text_fragment = process_span_element(element).with_context(|| {
+                            format!("Failed to process span element: {value:?}")
+                        })?;
                         current_line.push(text_fragment);
                     }
                     other => {
@@ -103,10 +105,7 @@ fn process_font_element(font: ElementRef) -> Result<TextFragment> {
                 let text = process_font_italic(font)?;
                 Ok(TextFragment::new_with_style(FontStyle::RedFont, text))
             }
-            Some("1") => {
-                let text = first_child_text(font)?;
-                Ok(TextFragment::new_with_style(FontStyle::SmallRed, text))
-            }
+            Some("1") => process_font_small_red(font),
             Some("+1") => {
                 let text = process_font_bold_italic(font)?;
                 Ok(TextFragment::new_with_style(FontStyle::LargeFont, text))
@@ -132,6 +131,34 @@ fn process_font_element(font: ElementRef) -> Result<TextFragment> {
             bail!("Font with unexpected color");
         }
     }
+}
+
+fn process_font_small_red(font: ElementRef) -> Result<TextFragment> {
+    // TODO: Create a new font style for span class nigra.
+    // For now, store a complete line in one text fragment.
+    let mut text = String::new();
+
+    for child in font.children() {
+        match child.value() {
+            Node::Element(e) => {
+                if e.name() == "span" && e.attr("class") == Some("nigra") {
+                    let element =
+                        ElementRef::wrap(child).expect("child references a Node::Element");
+                    text += &first_child_text(element)?;
+                } else {
+                    bail!("Unexpected element");
+                }
+            }
+            Node::Text(t) => {
+                text += t;
+            }
+            _ => {
+                bail!("Unexpected node type");
+            }
+        }
+    }
+
+    Ok(TextFragment::new_with_style(FontStyle::SmallRed, text))
 }
 
 fn process_span_element(span: ElementRef) -> Result<TextFragment> {
