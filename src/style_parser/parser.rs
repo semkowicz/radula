@@ -1,6 +1,7 @@
 use crate::style_parser::TextLine;
 use crate::style_parser::text_fragment::{FontStyle, TextFragment};
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result, anyhow, bail};
+use itertools::Itertools;
 use scraper::{ElementRef, Node};
 
 pub(crate) fn parse_cell(cell: ElementRef) -> Result<Vec<TextLine>> {
@@ -47,7 +48,9 @@ pub(crate) fn parse_cell(cell: ElementRef) -> Result<Vec<TextLine>> {
                 let text_fragment = TextFragment::new(t.to_string());
                 current_line.push(text_fragment);
             }
-            _ => {}
+            _ => {
+                bail!("Unexpected node type");
+            }
         }
     }
 
@@ -64,8 +67,9 @@ fn is_div_align_right(div_element: ElementRef) -> bool {
 
 fn first_child_text(font_element: ElementRef) -> Result<String> {
     font_element
-        .first_child()
-        .context("No child. Expected text node.")?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one child text node"))?
         .value()
         .as_text()
         .context("Value is not a text node")
@@ -74,10 +78,12 @@ fn first_child_text(font_element: ElementRef) -> Result<String> {
 
 fn process_font_italic(font_element: ElementRef) -> Result<String> {
     font_element
-        .first_child()
-        .context("No child. Expected <i> element.")?
-        .first_child()
-        .context("No child. Expected text node.")?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one child <i> element"))?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one text node"))?
         .value()
         .as_text()
         .context("Value is not a text node")
@@ -86,12 +92,15 @@ fn process_font_italic(font_element: ElementRef) -> Result<String> {
 
 fn process_font_bold_italic(font_element: ElementRef) -> Result<String> {
     font_element
-        .first_child()
-        .context("No child. Expected <b> element.")?
-        .first_child()
-        .context("No child. Expected <i> element.")?
-        .first_child()
-        .context("No child. Expected text node.")?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one child <b> element"))?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one child <i> element"))?
+        .children()
+        .exactly_one()
+        .map_err(|_| anyhow!("Expected exactly one text node"))?
         .value()
         .as_text()
         .context("Value is not a text node")

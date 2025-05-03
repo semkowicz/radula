@@ -7,6 +7,7 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0.97"
+itertools = "0.14.0"
 scraper = "0.23.1"
 time = { version = "0.3.41", features = ["formatting", "parsing"] }
 
