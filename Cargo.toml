@@ -6,12 +6,12 @@ authors = ["Daniel Semkowicz <daniel@semkowicz.pl>"]
 license = "MIT"
 
 [dependencies]
-anyhow = "1.0.97"
+anyhow = "1.0.100"
 itertools = "0.14.0"
-scraper = "0.23.1"
-time = { version = "0.3.41", features = ["formatting", "parsing"] }
+scraper = "0.25.0"
+time = { version = "0.3.44", features = ["formatting", "parsing"] }
 
 [dev-dependencies]
-clap = { version = "4.5.35", features = ["derive"] }
-comfy-table = "7.1.4"
-reqwest = { version = "0.12.15", features = ["blocking"] }
+clap = { version = "4.5.53", features = ["derive"] }
+comfy-table = "7.2.1"
+reqwest = { version = "0.13.1", features = ["blocking", "query"] }
