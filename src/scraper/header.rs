@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use scraper::Selector;
 
-pub(crate) fn scrape_day_name(form: scraper::ElementRef) -> Result<&str> {
+pub(crate) fn scrape_day_name(form: scraper::ElementRef<'_>) -> Result<&str> {
     let p_selector = Selector::parse("form > p").expect("This selector is valid");
 
     form.select(&p_selector)
@@ -12,7 +12,7 @@ pub(crate) fn scrape_day_name(form: scraper::ElementRef) -> Result<&str> {
         .context("No text in p element")
 }
 
-pub(crate) fn scrape_part_name(form: scraper::ElementRef) -> Result<&str> {
+pub(crate) fn scrape_part_name(form: scraper::ElementRef<'_>) -> Result<&str> {
     let h2_selector = Selector::parse("form > h2").expect("h2 is a correct HTML element");
 
     form.select(&h2_selector)

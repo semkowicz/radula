@@ -12,7 +12,7 @@ pub struct OfficiumPart {
     pub content: MainTable,
 }
 
-fn select_top_form(document: &Html) -> Result<ElementRef> {
+fn select_top_form(document: &'_ Html) -> Result<ElementRef<'_>> {
     let form_selector = Selector::parse(":root > body > form").expect("This selector is valid");
 
     document
