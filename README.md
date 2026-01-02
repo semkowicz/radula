@@ -19,3 +19,16 @@ cargo build --example docli
 ```
 
 Usage instructions are available under the command `docli --help`.
+
+### Local copy of Divinuum Officium
+
+Example application and tests require a local instance of Divinuum Officium served at
+`http://127.0.0.1:8080`.
+
+The local instance can be easily set up using Podman containers:
+
+```shell
+git clone https://github.com/DivinumOfficium/divinum-officium.git
+cd divinum-officium
+podman-compose up
+```
