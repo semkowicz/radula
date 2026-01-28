@@ -2,6 +2,7 @@
 ///
 /// Style naming corresponds to the naming found in the Options tab from the Divinum Officium
 /// project.
+#[derive(PartialEq, Eq, Debug)]
 pub enum FontStyle {
     DefaultFont,
     SmallText,
@@ -36,5 +37,12 @@ impl TextFragment {
 
     pub fn text(&self) -> &str {
         &self.text
+    }
+}
+
+impl std::fmt::Display for TextFragment {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let text = self.text.as_str().replace("\n", "\\n");
+        write!(f, "{:?}(\"{}\")", self.font_style, text)
     }
 }
