@@ -15,7 +15,7 @@ impl RequestParameters {
         query.push(("date", self.date.as_str()));
         query.push(("expand", "tota"));
         query.push(("version", "Rubrics 1960 - 1960"));
-        query.push(("lang2", "Polski-Newer"));
+        query.push(("lang2", "Polski"));
         query.push(("votive", "Hodie"));
         query.push(("command", "prayVesperae"));
         query
