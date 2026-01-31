@@ -6,6 +6,21 @@ mod parser;
 pub mod text_fragment;
 
 pub type TextLine = Vec<TextFragment>;
+
+pub fn text_line_trim(mut line: TextLine) -> TextLine {
+    let Some(start) = line.iter().position(|f| !f.text().trim().is_empty()) else {
+        return Vec::new();
+    };
+    let rev_pos = line
+        .iter()
+        .rev()
+        .position(|f| !f.text().trim().is_empty())
+        .expect("Vector has at least one non-empty element");
+    let end = line.len() - rev_pos;
+
+    line.drain(start..end).collect()
+}
+
 pub type TableCell = Vec<TextLine>;
 
 pub struct TableRow {

@@ -1,5 +1,5 @@
-use crate::style_parser::TextLine;
 use crate::style_parser::text_fragment::{FontStyle, TextFragment};
+use crate::style_parser::{TextLine, text_line_trim};
 use anyhow::{Context, Result, anyhow, bail};
 use itertools::Itertools;
 use scraper::{ElementRef, Node};
@@ -17,7 +17,8 @@ pub(crate) fn parse_cell(cell: ElementRef) -> Result<Vec<TextLine>> {
 
                 match e.name() {
                     "br" => {
-                        lines.push(current_line);
+                        let trimmed_line = text_line_trim(current_line);
+                        lines.push(trimmed_line);
                         current_line = TextLine::new();
                     }
                     "div" => {
